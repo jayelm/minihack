@@ -10,6 +10,7 @@ import termios
 import time
 import timeit
 import tty
+import numpy as np
 
 import gym
 
@@ -139,6 +140,8 @@ def play(
         # Create a tmp directory for individual screenshots
         tmpdir = tempfile.mkdtemp()
 
+    all_messages = set()
+
     while True:
         if not no_render:
             if not is_raw_env:
@@ -168,6 +171,8 @@ def play(
         else:
             obs, reward, done, info = env.step(action)
         steps += 1
+        message_tuple = tuple(obs["message"])
+        all_messages.add(message_tuple)
 
         if is_raw_env:
             done = done or steps >= max_steps  # NLE does this by default.
@@ -221,6 +226,8 @@ def play(
         "Finished after %i episodes and %f seconds. Mean sps: %f"
         % (episodes, timeit.default_timer() - total_start_time, mean_sps)
     )
+    all_messages = np.stack([np.array(x) for x in all_messages])
+    np.savetxt(f"{env_name}-messages-{ngames}-games.txt", all_messages, fmt="%d")
 
 
 def main():
