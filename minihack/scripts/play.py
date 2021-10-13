@@ -227,7 +227,9 @@ def play(
         % (episodes, timeit.default_timer() - total_start_time, mean_sps)
     )
     all_messages = np.stack([np.array(x) for x in all_messages])
-    np.savetxt(f"{env_name}-messages-{ngames}-games.txt", all_messages, fmt="%d")
+    np.savetxt(
+        f"{env_name}-messages-{ngames}-games.txt", all_messages, fmt="%d"
+    )
 
 
 def main():
